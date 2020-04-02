@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+    web:
+        build: ./web
+        command: gunicorn -w 4 web.wsgi -b 0.0.0.0:8000
+        volumes: 
+            - ./web:/web
+        ports: 
+            - "8000:8000"
+    nginx:
+        build: ./nginx
+        depends_on:
+        - web
+        command: nginx -g 'daemon off;'
+        ports:
+        - "80:80"
+        volumes:
+        - ./web/static:/var/www/static
+        - ./web/media:/var/www/media
